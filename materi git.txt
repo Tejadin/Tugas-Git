@@ -1,0 +1,8 @@
+Git adalah sistem kontrol versi terdistribusi (Distributed Version Control System / DVCS).
+Artinya Git digunakan untuk mencatat, mengelola, dan melacak perubahan kode/program yang kita buat.
+
+Dengan Git:
+
+-Kita bisa tahu siapa yang mengubah apa, kapan, dan mengapa.
+-Bisa bekerja berkolaborasi dalam tim tanpa takut kode tertimpa.
+-Bisa kembali ke versi sebelumnya kalau ada error.
