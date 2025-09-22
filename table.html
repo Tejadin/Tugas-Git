@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Pegawai</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead, tfoot {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Data Pegawai</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nama Pegawai</th>
+            <th>Umur</th>
+            <th>Jabatan</th>
+            <th>Status</th>
+            <th>Gaji Pokok (jt)</th>
+            <th>Tunjangan Jabatan (jt)</th>
+            <th>BPJS (jt)</th>
+            <th>Tunjangan Keluarga (jt)</th>
+            <th>Total Gaji (jt)</th>
+        </tr>
+    </thead>
+    <tbody id="pegawaiBody">
+        <!-- Data akan diisi lewat JavaScript -->
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4">Total Semua</td>
+            <td id="totalGapok">0</td>
+            <td id="totalTunjanganJabatan">0</td>
+            <td id="totalBPJS">0</td>
+            <td id="totalTunjanganKeluarga">0</td>
+            <td id="totalGaji">0</td>
+        </tr>
+    </tfoot>
+</table>
+
+<script>
+// Data pegawai contoh
+const pegawai = [
+    {nama: 'Andi', umur: 35, jabatan: 'Manajer', status: 'Sudah Menikah'},
+    {nama: 'Budi', umur: 28, jabatan: 'Asisten Manajer', status: 'Belum Menikah'},
+    {nama: 'Cindy', umur: 24, jabatan: 'Staff', status: 'Sudah Menikah'},
+];
+
+// Fungsi hitung gaji pokok berdasarkan jabatan
+function hitungGapok(jabatan) {
+    if(jabatan === 'Manajer') return 15;
+    else if(jabatan === 'Asisten Manajer') return 10;
+    else if(jabatan === 'Staff') return 5;
+    else return 0;
+}
+
+let totalGapok = 0, totalTunjanganJabatan = 0, totalBPJS = 0, totalTunjanganKeluarga = 0, totalGajiKeseluruhan = 0;
+
+const tbody = document.getElementById('pegawaiBody');
+
+pegawai.forEach(p => {
+    const gapok = hitungGapok(p.jabatan);
+    const tunjanganJabatan = 0.15 * gapok;
+    const bpjs = 0.10 * gapok;
+    const tunjanganKeluarga = (p.status === 'Sudah Menikah') ? 0.20 * gapok : 0;
+    const totalGaji = gapok + tunjanganJabatan + bpjs + tunjanganKeluarga;
+
+    totalGapok += gapok;
+    totalTunjanganJabatan += tunjanganJabatan;
+    totalBPJS += bpjs;
+    totalTunjanganKeluarga += tunjanganKeluarga;
+    totalGajiKeseluruhan += totalGaji;
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${p.nama}</td>
+        <td>${p.umur}</td>
+        <td>${p.jabatan}</td>
+        <td>${p.status}</td>
+        <td>${gapok.toFixed(2)}</td>
+        <td>${tunjanganJabatan.toFixed(2)}</td>
+        <td>${bpjs.toFixed(2)}</td>
+        <td>${tunjanganKeluarga.toFixed(2)}</td>
+        <td>${totalGaji.toFixed(2)}</td>
+    `;
+    tbody.appendChild(row);
+});
+
+// Isi data total pada tfoot
+document.getElementById('totalGapok').textContent = totalGapok.toFixed(2);
+document.getElementById('totalTunjanganJabatan').textContent = totalTunjanganJabatan.toFixed(2);
+document.getElementById('totalBPJS').textContent = totalBPJS.toFixed(2);
+document.getElementById('totalTunjanganKeluarga').textContent = totalTunjanganKeluarga.toFixed(2);
+document.getElementById('totalGaji').textContent = totalGajiKeseluruhan.toFixed(2);
+
+</script>
+
+</body>
+</html>
