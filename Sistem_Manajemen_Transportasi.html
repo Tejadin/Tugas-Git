@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sistem Manajemen Mobil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #222;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 25px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-height: 350px;
+            overflow-y: auto;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistem Manajemen Mobil</h1>
+    <div class="container">
+        <button onclick="sistem.tampilkanPelanggan()">Tampilkan Pelanggan</button>
+        <button onclick="sistem.tampilkanKendaraan()">Tampilkan Kendaraan</button>
+        <pre id="output"></pre>
+    </div>
+    <script>
+        // Kelas Induk Kendaraan
+        class Kendaraan {
+            constructor(nama, tipe) {
+                this.nama = nama;
+                this.tipe = tipe;
+                this.disewa = false;
+            }
+
+            sewa() {
+                if (this.disewa) {
+                    return false;
+                }
+                this.disewa = true;
+                return true;
+            }
+
+            kembalikan() {
+                this.disewa = false;
+            }
+
+            info() {
+                return `Nama: ${this.nama}\nTipe: ${this.tipe}\nStatus: ${this.disewa ? "Disewa" : "Tersedia"}`;
+            }
+        }
+
+        // Subkelas Mobil dari Kendaraan
+        class Mobil extends Kendaraan {
+            constructor(nama, kapasitasPenumpang) {
+                super(nama, "Mobil");
+                this.kapasitasPenumpang = kapasitasPenumpang;
+            }
+
+            info() {
+                return `${super.info()}\nKapasitas Penumpang: ${this.kapasitasPenumpang}`;
+            }
+        }
+
+        // Kelas Pelanggan
+        class Pelanggan {
+            constructor(nama, nomorTelepon) {
+                this.nama = nama;
+                this.nomorTelepon = nomorTelepon;
+                this.kendaraanDisewa = null;
+            }
+
+            sewaKendaraan(kendaraan) {
+                if (this.kendaraanDisewa) {
+                    return `${this.nama} sudah menyewa kendaraan lain (${this.kendaraanDisewa.nama}). Harap kembalikan terlebih dahulu.`;
+                }
+
+                if (kendaraan.sewa()) {
+                    this.kendaraanDisewa = kendaraan;
+                    return `${this.nama} berhasil menyewa ${kendaraan.nama}.`;
+                } else {
+                    return `${kendaraan.nama} saat ini tidak tersedia.`;
+                }
+            }
+
+            kembalikanKendaraan() {
+                if (this.kendaraanDisewa) {
+                    this.kendaraanDisewa.kembalikan();
+                    let namaKendaraan = this.kendaraanDisewa.nama;
+                    this.kendaraanDisewa = null;
+                    return `${this.nama} mengembalikan ${namaKendaraan}.`;
+                } else {
+                    return `${this.nama} tidak sedang menyewa kendaraan.`;
+                }
+            }
+
+            info() {
+                return `Nama: ${this.nama}\nTelepon: ${this.nomorTelepon}\n` +
+                    (this.kendaraanDisewa ? `Menyewa: ${this.kendaraanDisewa.nama}` : 'Tidak menyewa kendaraan');
+            }
+        }
+
+        // Sistem Manajemen Transportasi
+        class SistemTransportasi {
+            constructor() {
+                this.pelangganList = [];
+                this.kendaraanList = [];
+            }
+
+            tambahPelanggan(pelanggan) {
+                this.pelangganList.push(pelanggan);
+            }
+
+            tambahKendaraan(kendaraan) {
+                this.kendaraanList.push(kendaraan);
+            }
+
+            tampilkanPelanggan() {
+                let output = "Daftar Pelanggan:\n\n";
+                if (this.pelangganList.length === 0) {
+                    output += "Belum ada pelanggan.\n";
+                } else {
+                    this.pelangganList.forEach(p => {
+                        output += p.info() + "\n\n";
+                    });
+                }
+                document.getElementById("output").textContent = output;
+            }
+
+            tampilkanKendaraan() {
+                let output = "Daftar Kendaraan:\n\n";
+                if (this.kendaraanList.length === 0) {
+                    output += "Belum ada kendaraan.\n";
+                } else {
+                    this.kendaraanList.forEach(k => {
+                        output += k.info() + "\n\n";
+                    });
+                }
+                document.getElementById("output").textContent = output;
+            }
+        }
+
+        // Inisialisasi sistem dan data
+        const sistem = new SistemTransportasi();
+
+        // Tambah kendaraan
+        const mobil1 = new Mobil("Toyota Avanza", 7);
+        const mobil2 = new Mobil("Honda Jazz", 5);
+        sistem.tambahKendaraan(mobil1);
+        sistem.tambahKendaraan(mobil2);
+
+        // Tambah pelanggan
+        const pelanggan1 = new Pelanggan("Budi", "08123456789");
+        const pelanggan2 = new Pelanggan("Ani", "08987654321");
+        const pelanggan3 = new Pelanggan("Rina", "08223344556");
+        sistem.tambahPelanggan(pelanggan1);
+        sistem.tambahPelanggan(pelanggan2);
+        sistem.tambahPelanggan(pelanggan3);
+
+        // Contoh sewa kendaraan
+        console.log(pelanggan1.sewaKendaraan(mobil1));  // Budi sewa Toyota Avanza
+        console.log(pelanggan2.sewaKendaraan(mobil2));  // Ani sewa Honda Jazz
+        console.log(pelanggan3.sewaKendaraan(mobil1));  // Rina coba sewa mobil yg sudah disewa
+    </script>
+</body>
+</html>
